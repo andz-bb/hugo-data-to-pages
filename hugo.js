@@ -9,7 +9,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 let config = {
-  root: "../../hugo/website", // Root hugo folder, can be empty
+  root: "../", // Root hugo folder, can be empty
   dataFolder: "data", // Data folder path (will fetch ALL files from here)
   type: "plugin",
   // Type name [basically layout] (save it under "layouts/NAME/single.html" or themes/THEME/layouts/NAME/single.html).
