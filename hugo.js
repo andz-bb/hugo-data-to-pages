@@ -10,13 +10,12 @@ dotenv.config();
 
 let config = {
   root: "../", // Root hugo folder, can be empty
-  dataFolder: "data", // Data folder path (will fetch ALL files from here)
   type: "plugin",
   // Type name [basically layout] (save it under "layouts/NAME/single.html" or themes/THEME/layouts/NAME/single.html).
   // Can be overridden on individual pages by defining "type" under "fields"
 
   // pages: "plugins", // Pages element in your data, in case it's "posts" or "articles" etc.
-  contentPath: "content/plugins", // Path to content directory (in case it's not "content")
+  contentPath: "data", // Path to content directory (in case it's not "content")
   hugoPath: process.env.HUGO_PATH, // Path to hugo binary (if global, e.g. /snap/bin/hugo)
 };
 
@@ -67,12 +66,14 @@ const build = async (add, force) => {
   if (!data) return console.log("No data");
   let pages = config.pages ? data[config.pages] : data;
   for (let i in pages) {
-    const pagePath =
-      config.root + config.contentPath + "/" + toKebabCase(pages[i].PluginName);
+    const page = pages[i];
+    const pagePath = config.root + config.contentPath + "/" + page.PluginType;
+    const filePath = `${pagePath}/${toKebabCase(page.PluginName)}.json`;
+
     if (add) {
       fse.ensureDirSync(pagePath);
-      fs.writeFileSync(pagePath + "/index.md", dataToJSON(pages[i]) + "\n");
-      console.log("Created file: " + pagePath + "/index.md");
+      fs.writeFileSync(filePath, dataToJSON(page));
+      console.log("Created file: " + filePath);
     } else if (fs.existsSync(pagePath)) {
       let response;
       if (!force) {
